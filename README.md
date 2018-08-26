@@ -90,6 +90,37 @@ http://IPADDRESS_DOCKERHOST:9090
 You may need to refresh your web browser a view times before you seen planes.
 Running on a raspberry pi it can take a while.   
 
+### Run the container on a NAS server
+In my case a Synology DS916+ which supports a Docker App (install in the App Center)
+Running Docker-Toolbox on a Win10 desktop to create the images and manage them.
+(Note: there are some issues with Windows and virtualization - vmWare and Docker Dev env native are incompatible due to Hyper-V - hence I use the Toolbox version)
+
+Check you images
+````
+$ docker image ls
+
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+bm98/dump1090-fa    v3.6.2.1            d3c2873b70e1        About an hour ago   619MB
+debian              latest              3bbb526d2608        5 weeks ago         101MB
+````
+Save the image as tar file
+````
+$ docker image save -o dump1090-fa-3.6.2.1.tar bm98/dump1090-fa
+$ ls
+-a----       26.08.2018     16:58      638963200 dump1090-fa-3.6.2.1.tar
+````
+Make the tar file available on the NAS i.e. in one of the shares.
+
+Then on the NAS - Start the Docker App 
+- Image - Import from file (takes a while and gives here 'Operation failed' - but still works...)
+- Image - select image and Launch it
+- Image - Launch - Advanced Settings - Set the local port AND Apply...
+- OK Create Container to finish this task
+- Container - Check state, health and details, logs
+
+Connect the WebServer http:/myNAS:9090  (uses about 25MB RAM and 0.25% CPU)
+This installment pulls data from a RasPi with RTL-SDR dongle running Piaware through WiFi from the attic.
+
 ### Manage the containers
 
 Check the resource consumption per docker container and notice that it is very low compared to a VM or a raspberry:
